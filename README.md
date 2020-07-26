@@ -15,7 +15,7 @@ This template uses `hyper` server. This allows additional context available in t
 First, pull the template with the faas CLI and create a new function:
 
 ```
-$ faas template store pull https://github.com/Kynothon/gstrust-http-template.git
+$ faas template pull https://github.com/Kynothon/gstrust-http-template.git
 $ faas-cli new --lang gstrust-http-template <function name>
 ```
 
