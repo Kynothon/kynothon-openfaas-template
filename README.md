@@ -3,10 +3,10 @@
 This repository contains the template for OpenFaaS using the upgraded `of-watchdog` which allows for higher throughput.
 
 ```
-$ faas template store pull https://github.com/GnaphronG/asyncrust-openfaas-http-template.git
+$ faas template pull https://github.com/GnaphronG/asyncrust-openfaas-http-template.git
 $ faas new --list
 Languages available as templates:
-- asyncRust-http-template
+- grtust-http-template
 ```
 
 This template uses `hyper` server. This allows additional context available in the request (by providing the full body to the handler) and more control over the response by passing it back to the HTTP reponse context.
