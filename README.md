@@ -1,4 +1,4 @@
-# OpenFaaS Async Rust HTTP Template
+# OpenFaaS GStreamer Async Rust HTTP Template
 
 This repository contains the template for OpenFaaS using the upgraded `of-watchdog` which allows for higher throughput.
 
@@ -15,19 +15,21 @@ This template uses `hyper` server. This allows additional context available in t
 First, pull the template with the faas CLI and create a new function:
 
 ```
-$ faas template store pull https://github.com/GnaphronG/asyncrust-openfaas-http-template.git
-$ faas-cli new --lang asyncRust-http-template <function name>
+$ faas template store pull https://github.com/Kynothon/gstrust-http-template.git
+$ faas-cli new --lang gstrust-http-template <function name>
 ```
 
 In the directory that was created, using the name of you function, you'll find `lib.rs`. It will look like this:
 
 ``` rust
+extern crate gstreamer as gst;
 use hyper::{Body, Request, Response};
 
-const PHRASE: &str = "Hello, World!";
-
 pub async fn handle(_req: Request<Body>) -> Response<Body> {
-    Response::new(Body::from(PHRASE))
+    let gst_version = gst::version_string();
+    let output = format!("GStreamer Version: {}", gst_version);
+
+    Response::new(Body::from(output))
 }
 ```
 

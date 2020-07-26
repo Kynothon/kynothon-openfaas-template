@@ -1,0 +1,2 @@
+language: gstreamer-rust
+fprocess: main
