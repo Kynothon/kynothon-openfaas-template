@@ -1,2 +1,2 @@
-language: gstreamer-rust
+language: gstrust-http-template
 fprocess: main

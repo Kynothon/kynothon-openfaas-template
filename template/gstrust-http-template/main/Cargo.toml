@@ -6,5 +6,5 @@ edition = "2018"
 
 [dependencies]
 handler = { path = "../function" }
-hyper = "0.13"
-tokio = { version = "0.2", features = ["macros"] }
+hyper = { version = "0.14", features = [ "server", "stream", "runtime", "http1", "http2" ] }
+tokio = { version = "1.0", features = ["rt", "macros"] }

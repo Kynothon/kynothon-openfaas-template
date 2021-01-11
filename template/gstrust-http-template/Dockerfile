@@ -1,7 +1,7 @@
 # syntax = docker/dockerfile:experimental
-ARG OF_WATCHDOG_VERSION=0.7.7
-ARG IMAGE=ggoussard/gstreamer
-ARG IMAGE_VERSION=1.16.2
+ARG OF_WATCHDOG_VERSION=0.8.1
+ARG IMAGE=alpine
+ARG IMAGE_VERSION=3.12
 
 FROM openfaas/of-watchdog:${OF_WATCHDOG_VERSION} as watchdog
 FROM ${IMAGE}:${IMAGE_VERSION} as builder
@@ -13,9 +13,9 @@ WORKDIR /home/rust
 
 RUN apk add --no-cache rust \
 		       cargo \
-		       gst-plugins-base-dev \
-		       gst-plugins-bad-dev \
-		       gstreamer-dev \
+               glib-dev \
+               gstreamer-dev \
+               gst-plugins-base-dev \
 		       ${DEV_PACKAGE}	
 
 # Copy all the sources
@@ -33,7 +33,16 @@ FROM ${IMAGE}:${IMAGE_VERSION} as runner
 ARG ADDITIONAL_PACKAGE
 
 # Install packages and add non-root user
-RUN apk --no-cache add curl ca-certificates ${ADDITIONAL_PACKAGE} \
+RUN apk --no-cache add libgcc \
+                        ca-certificates \
+                        gst-plugins-base \
+                        glib \
+                        gstreamer \
+                        gst-plugins-base-dev \
+                        gst-plugins-good \
+                        gst-plugins-bad \
+                        gst-plugins-ugly \
+                        ${ADDITIONAL_PACKAGE} \
     && addgroup -S app && adduser -S -g app app
 
 WORKDIR /home/app
