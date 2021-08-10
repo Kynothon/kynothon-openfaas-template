@@ -1,9 +1,9 @@
 # syntax = docker/dockerfile:experimental
 ARG OF_WATCHDOG_VERSION=0.8.1
 ARG IMAGE=alpine
-ARG IMAGE_VERSION=3.12
+ARG IMAGE_VERSION=3.14
 
-FROM openfaas/of-watchdog:${OF_WATCHDOG_VERSION} as watchdog
+FROM --platform=${TARGETPLATFORM:-linux/amd64} ghcr.io/openfaas/of-watchdog:${OF_WATCHDOG_VERSION} as watchdog
 FROM ${IMAGE}:${IMAGE_VERSION} as builder
 
 ENV CARGO_HOME=/root/.cargo

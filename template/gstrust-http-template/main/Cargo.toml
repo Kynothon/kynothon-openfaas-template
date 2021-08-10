@@ -1,10 +1,10 @@
 [package]
 name = "main"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Gnaphron <gnaphron@gmail.com>"]
 edition = "2018"
 
 [dependencies]
 handler = { path = "../function" }
 hyper = { version = "0.14", features = [ "server", "stream", "runtime", "http1", "http2" ] }
-tokio = { version = "1.0", features = ["rt", "macros"] }
+tokio = { version = "1.9", features = ["rt", "macros"] }

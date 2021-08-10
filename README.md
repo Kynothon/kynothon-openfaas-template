@@ -3,7 +3,7 @@
 This repository contains the template for OpenFaaS using the upgraded `of-watchdog` which allows for higher throughput.
 
 ```
-$ faas template pull https://github.com/GnaphronG/asyncrust-openfaas-http-template.git
+$ faas template pull https://github.com/Kynothon/gst-rust-http-template.git
 $ faas new --list
 Languages available as templates:
 - grtust-http-template
