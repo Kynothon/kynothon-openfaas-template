@@ -43,6 +43,7 @@ RUN apk --no-cache add libgcc \
                         gst-plugins-good \
                         gst-plugins-bad \
                         gst-plugins-ugly \
+                        libcsound64-6.0 \
                         ${ADDITIONAL_PACKAGE} \
     && addgroup -S app && adduser -S -g app app
 
