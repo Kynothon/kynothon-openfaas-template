@@ -2,8 +2,10 @@
 ARG OF_WATCHDOG_VERSION=0.8.1
 ARG IMAGE=alpine
 ARG IMAGE_VERSION=3.14
+ARG GST_PLUGINS_RS_VERSION=0.7.2-a
 
 FROM --platform=${TARGETPLATFORM:-linux/amd64} ghcr.io/openfaas/of-watchdog:${OF_WATCHDOG_VERSION} as watchdog
+FROM --platform=${TARGETPLATFORM:-linux/amd64} ghcr.io/kynothon/gst-plugins-rs-docker:0.7.2-a as gst_plugin_rs
 FROM ${IMAGE}:${IMAGE_VERSION} as builder
 
 ENV CARGO_HOME=/root/.cargo
@@ -38,7 +40,6 @@ RUN apk --no-cache add libgcc \
                         gst-plugins-base \
                         glib \
                         gstreamer \
-                        gst-plugins-base-dev \
                         gst-plugins-good \
                         gst-plugins-bad \
                         gst-plugins-ugly \
@@ -49,6 +50,7 @@ WORKDIR /home/app
 
 # Copy of-watchdog binary
 COPY --from=watchdog /fwatchdog /usr/bin/fwatchdog
+COPY --from=gst_plugin_rs / /
 COPY --from=builder /home/rust/main/target/release/main /home/app/main
 
 USER app
