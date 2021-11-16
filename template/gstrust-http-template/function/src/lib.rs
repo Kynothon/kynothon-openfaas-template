@@ -1,7 +1,11 @@
+extern crate gstreamer as gst; 
+
 use hyper::{Body, Request, Response};
 
-const PHRASE: &str = "Hello, Rust ⚙";
-
 pub async fn handle(_req: Request<Body>) -> Response<Body> {
-    Response::new(Body::from(PHRASE))
+    let version = gst::version_string();
+    let output = format!("GStreamer Version: {} on Rust ⚙\n", version);
+
+
+    Response::new(Body::from(output))
 }
