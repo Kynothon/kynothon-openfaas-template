@@ -1,57 +1,54 @@
-# syntax = docker/dockerfile:experimental
-ARG OF_WATCHDOG_VERSION=0.8.1
-ARG IMAGE=alpine
-ARG IMAGE_VERSION=3.14
-ARG GST_PLUGINS_RS_VERSION=0.7.2-a
+ARG OF_WATCHDOG_VERSION=0.9.2
+ARG RUST_VERSION=1.56
+ARG DEBIAN_VERSION=bullseye
+ARG GST_PLUGINS_RS_VERSION=v0.7.2a
 
 FROM --platform=${TARGETPLATFORM:-linux/amd64} ghcr.io/openfaas/of-watchdog:${OF_WATCHDOG_VERSION} as watchdog
-FROM --platform=${TARGETPLATFORM:-linux/amd64} ghcr.io/kynothon/gst-plugins-rs-docker:0.7.2-a as gst_plugin_rs
-FROM ${IMAGE}:${IMAGE_VERSION} as builder
+FROM --platform=${TARGETPLATFORM:-linux/amd64} ghcr.io/kynothon/gst-plugins-rs-docker:latest as gst-plugins-rs
+FROM --platform=${TARGETPLATFORM:-linux/amd64} rust:${RUST_VERSION}-${DEBIAN_VERSION} as builder
 
-ENV CARGO_HOME=/root/.cargo
-ARG DEV_PACKAGE
+COPY --from=gst-plugins-rs / /
 
-WORKDIR /home/rust
+ARG ADDITIONAL_PACKAGE
+ARG ADDITIONAL_DEV_PACKAGE
 
-RUN apk add --no-cache rust \
-		       cargo \
-               glib-dev \
-               gstreamer-dev \
-               gst-plugins-base-dev \
-		       ${DEV_PACKAGE}	
+RUN apt-get -qy update && apt-get -qy install \
+	libgstreamer1.0-dev \
+	${ADDITIONAL_DEV_PACKAGE}
 
-# Copy all the sources
-COPY main ./main
-RUN USER=nobody cargo init --lib --name handler function && \
-    mkdir -p main/.cargo && \
-    cd main && \
-    cargo fetch
+ENV PATH=$PATH:/home/app/.local/bin
 
+WORKDIR /home/rust/
+
+COPY main     ./main
 COPY function ./function
+
 RUN  cd main && cargo build --release
 
-FROM ${IMAGE}:${IMAGE_VERSION} as runner
+FROM --platform=${TARGETPLATFORM:-linux/amd64} debian:${DEBIAN_VERSION}-slim as runner
 
 ARG ADDITIONAL_PACKAGE
 
 # Install packages and add non-root user
-RUN apk --no-cache add libgcc \
-                        ca-certificates \
-                        gst-plugins-base \
-                        glib \
-                        gstreamer \
-                        gst-plugins-good \
-                        gst-plugins-bad \
-                        gst-plugins-ugly \
-                        libcsound64-6.0 \
-                        ${ADDITIONAL_PACKAGE} \
-    && addgroup -S app && adduser -S -g app app
+RUN apt-get -qy update && apt-get -qy install \
+	libgstreamer1.0-0 \
+	streamer1.0-plugins-base \
+	gstreamer1.0-plugins-good \
+	gstreamer1.0-plugins-bad \
+	gstreamer1.0-plugins-ugly \
+	gstreamer1.0-libav \
+	libcsound64-6.0 \
+	libwebpdemux2 \
+	${ADDITIONAL_PACKAGE} \
+	&& rm -rf /var/lib/apt/lists/* \
+	&& addgroup --system app \
+	&& adduser app --system --home /home/app --ingroup app
 
 WORKDIR /home/app
 
 # Copy of-watchdog binary
 COPY --from=watchdog /fwatchdog /usr/bin/fwatchdog
-COPY --from=gst_plugin_rs / /
+COPY --from=gst-plugins-rs / / 
 COPY --from=builder /home/rust/main/target/release/main /home/app/main
 
 USER app
