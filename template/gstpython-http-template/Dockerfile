@@ -61,7 +61,7 @@ ENV PYTHONPATH=/usr/lib/python3/dist-packages
 
 ARG TEST_COMMAND=tox
 ARG TEST_ENABLED=true
-RUN if [ "$TEST_ENABLED" == "false" ]; then \
+RUN if [ "x$TEST_ENABLED" = "xfalse" ]; then \
     echo "skipping tests";\
     else \
     eval "$TEST_COMMAND"; \

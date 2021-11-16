@@ -12,7 +12,7 @@ def handle(req):
     Gst.init(None)
     version = Gst.version_string()
 
-    return f"Gstreamer version: {version} on 🐍"
+    return f"Gstreamer version: {version} on 🐍\n"
 
 
 if __name__ == "__main__":
