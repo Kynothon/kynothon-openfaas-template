@@ -1,9 +1,13 @@
 #![deny(warnings)]
 
+use log;
+use env_logger;
+
 use hyper::service::{make_service_fn, service_fn};
 use hyper::{Body, Error, Request, Response, Server};
 
 fn main() {
+    env_logger::init();
     // Configure a runtime that runs everything on the current thread
     let rt = tokio::runtime::Builder::new_current_thread()
         .enable_all()
@@ -28,11 +32,11 @@ async fn run() {
 
     let server = Server::bind(&addr).executor(LocalExec).serve(make_service);
 
-    println!("Listening on http://{}", addr);
+    log::info!("Listening on http://{}", addr);
 
     // The server would block on current thread to await !Send futures.
     if let Err(e) = server.await {
-        eprintln!("server error: {}", e);
+        log::error!("server error: {}", e);
     }
 }
 

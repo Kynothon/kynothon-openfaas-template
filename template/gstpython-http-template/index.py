@@ -4,6 +4,7 @@
 from flask import Flask, request
 from function import handler
 from waitress import serve
+import logging
 import os
 
 app = Flask(__name__)
@@ -38,4 +39,7 @@ def main_route(path):
     return ret
 
 if __name__ == '__main__':
+    loglevel = os.environ.get('LOGLEVEL', 'WARNING').upper()
+    logging.basicConfig(level=loglevel)
+
     serve(app, host='0.0.0.0', port=5000)

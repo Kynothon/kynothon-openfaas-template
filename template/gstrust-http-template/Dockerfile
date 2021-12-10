@@ -1,10 +1,10 @@
 ARG OF_WATCHDOG_VERSION=0.9.2
 ARG RUST_VERSION=1.56
 ARG DEBIAN_VERSION=bullseye
-ARG GST_PLUGINS_RS_VERSION=v0.7.2a
+ARG GST_PLUGINS_RS_VERSION=master
 
 FROM --platform=${TARGETPLATFORM:-linux/amd64} ghcr.io/openfaas/of-watchdog:${OF_WATCHDOG_VERSION} as watchdog
-FROM --platform=${TARGETPLATFORM:-linux/amd64} ghcr.io/kynothon/gst-plugins-rs-docker:latest as gst-plugins-rs
+FROM --platform=${TARGETPLATFORM:-linux/amd64} ghcr.io/kynothon/gst-plugins-rs-docker:${GST_PLUGINS_RS_VERSION} as gst-plugins-rs
 FROM --platform=${TARGETPLATFORM:-linux/amd64} rust:${RUST_VERSION}-${DEBIAN_VERSION} as builder
 
 COPY --from=gst-plugins-rs / /

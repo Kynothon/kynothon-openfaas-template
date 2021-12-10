@@ -1,2 +1,2 @@
 language: gstrust-http-template
-fprocess: main
+fprocess: ./main
