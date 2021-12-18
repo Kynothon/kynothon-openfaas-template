@@ -1,9 +1,10 @@
 ARG OF_WATCHDOG_VERSION=0.8.4
 ARG PYTHON_VERSION=3.9                          
 ARG DEBIAN_VERSION=bullseye          
+ARG BENTO4_VERSION=v1.6.0-639
 
 FROM --platform=${TARGETPLATFORM:-linux/amd64} ghcr.io/openfaas/of-watchdog:${OF_WATCHDOG_VERSION} as watchdog
-FROM bento4:local as bento4
+FROM --platform=${TARGETPLATFORM:-linux/amd64} ghcr.io/kynothon/bento4docker:${BENTO4_VERSION} as bento4
 FROM python:${PYTHON_VERSION}-slim-${DEBIAN_VERSION}
 
 COPY --from=watchdog /fwatchdog /usr/bin/fwatchdog
